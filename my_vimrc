@@ -1,0 +1,123 @@
+"防止中文注释乱码
+set fileencoding=utf-8
+set fenc=utf-8
+set fencs=utf-8,usc-bom,euc-jp,gb18030,gbk,gb2312,cp936,big-5
+set enc=utf-8
+let &termencoding=&encoding
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+colorscheme desert
+filetype plugin indent on
+syntax on
+set number
+set autoindent
+set hlsearch
+set ts=4
+set expandtab
+set incsearch
+set guifont=Monospace\ Bold\ 20
+set shiftwidth=4
+set cursorcolumn
+set cursorline
+set fdm=marker
+set nowrap
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+inoremap " ""<Esc>i
+inoremap { {}<Esc>i
+inoremap [ []<Esc>i
+inoremap ( ()<Esc>i
+
+" 让 Enter 键在补全模式下确认选择，而不是换行
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+
+" 让 Tab 键在补全模式下进行选择和循环
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap aaa  always_ff @(posedge clk or negedge rstn) begin  <Esc>i
+
+" 使用 \ 在行首续行，极其清晰地定义 UVM 组件模板
+inoremap ccc class extends uvm_component;<CR><CR>
+    \    `uvm_component_utils()<CR><CR>
+    \    function new(string name = "", uvm_component parent = null);<CR>
+    \        super.new(name, parent);<CR>
+    \    endfunction<CR><CR>
+    \endclass<Esc>8kwi
+
+" 选中代码后，按 Ctrl+/ 加上 // 注释
+vnoremap <C-_> :s/^/\/\//<CR>:noh<CR>
+" 选中代码后，按 Ctrl+\ 取消 // 注释
+vnoremap <C-\> :s/^\/\///<CR>:noh<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" 为避免重复或难以管理 autocmd，最好把它放到 augroup 中并先清空组
+augroup SystemVerilogFT
+    autocmd!
+    autocmd BufRead,BufNewFile *.sv setfiletype systemverilog
+    autocmd bufnewfile *.sv,*.v,*.c,*.cpp,*.h,*.cxx,*.cc,*.hpp  call SetComment()
+    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    " ==========================================
+    " 自动清洗全角标点 (Auto-replace Chinese Punctuation)
+    " ==========================================
+    " 当保存 .v, .sv 文件时，自动将中文引号、逗号、分号替换为英文
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/“/"/ge
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/”/"/ge
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/‘/'/ge
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/’/'/ge
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/，/,/ge
+    autocmd BufWritePre *.v,*.sv,*.vh silent! %s/；/;/ge
+    " 将中文标点定义为语法错误，极其刺眼地标红
+    autocmd Syntax * syntax match ErrorMsg /[“”‘’，；：]/
+augroup END
+
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"当新建.sv .v .c .cpp .cxx .cc .h .hpp等文件时会自动调用SetComment()函数生成文件头描述性信息
+function SetComment()
+    call setline(1,"/*=======================================================================================")
+    call append(line("."),"Copyright (c): School of Computational Microelectronics,SUAT.ALL rights reserved. ")
+    call append(line(".")+1,"                                                                        ")
+    call append(line(".")+2,"  Create by:Zhenyan ZHU")
+    call append(line(".")+3,"      Email:suat25060340@stu.suat-sz.edu.cn")
+    call append(line(".")+4,"       Date:")
+    call append(line(".")+5,"   Filename:")
+    call append(line(".")+6,"Description:")
+    call append(line(".")+7,"    Version:")
+    call append(line(".")+8,"Last Change:")
+    call append(line(".")+9,"   ")
+    call append(line(".")+10,"=============================================================================*/")
+    ""calcall append(line(".")+11,"module #(")
+    ""calcall append(line(".")+12,"    parameter DW = ")
+    ""calcall append(line(".")+13,")(")
+    ""calcall append(line(".")+14,"    input        clk,")
+    ""calcall append(line(".")+15,"    input        rst_n,//low active")
+    ""calcall append(line(".")+16,"    ")
+    ""calcall append(line(".")+17,");")
+    ""calcall append(line(".")+18,"                                                                        ")
+    ""calcall append(line(".")+19,"always @(posedge clk or negedge rst_n) begin")
+    ""calcall append(line(".")+20,"    if(~rst_n) begin")
+    ""calcall append(line(".")+21,"        <= ;")
+    ""calcall append(line(".")+22,"    end")
+    ""calcall append(line(".")+23,"    else begin")
+    ""calcall append(line(".")+24,"        <= ;")
+    ""calcall append(line(".")+25,"    end")
+    ""calcall append(line(".")+26,"end")
+    ""calcall append(line(".")+27,"                                                                        ")
+    ""calcall append(line(".")+28,"                                                                        ")
+    ""calcall append(line(".")+29,"endmodule")
+    call append(line(".")+11,"//Global Parameter Configuration                                   ")
+    call append(line(".")+12, "`ifndef _".toupper(expand("%:t:r"))."_SV")
+    call append(line(".")+13, "`define _".toupper(expand("%:t:r"))."_SV")
+    call append(line(".")+14, "                                                                  ")
+    call append(line(".")+15, "                                                                  ")
+    call append(line(".")+16, "`endif")
+    call append(line(".")+17,"/*===================================================================================================================*/")
+    call append(line(".")+18,"                                                                              ")
+    call append(line(".")+19,"                                                                              ")
+    call append(line(".")+20,"                                                                              ")
+endfunction

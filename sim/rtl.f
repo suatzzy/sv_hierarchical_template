@@ -1,2 +1,2 @@
 
-../rtl/counter.sv
+//////////../rtl/counter.sv
