@@ -23,6 +23,7 @@ cp /home/jjt/target/sv_lab/sv_hierarchical_template/sim/Makefile sim/Makefile
 cp /home/jjt/target/sv_lab/sv_hierarchical_template/sim/dump_fsdb_vcs.tcl sim/dump_fsdb_vcs.tcl
 cp /home/jjt/target/sv_lab/sv_hierarchical_template/sim/rtl.f sim/rtl.f
 cp /home/jjt/target/sv_lab/sv_hierarchical_template/sim/tb.f sim/tb.f
+cp /home/jjt/target/sv_lab/sv_hierarchical_template/sim/novas.rc sim/novas.rc
 
 
 
