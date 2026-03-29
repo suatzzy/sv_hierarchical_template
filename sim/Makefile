@@ -17,7 +17,7 @@ SVTB = -f tb.f
 
 SEED = 1
 VCOMP = vlogan -full64 -sverilog -timescale=1ps/1ps -l logs/comp.log -kdb
-ELAB = vcs -full64 -sverilog -cm tgl+branch+fsm+line+cond -debug_access+all -l logs/elab.log -sim_res=1ps -kdb \
+ELAB = vcs -full64 -sverilog -cm tgl+branch+fsm+line+cond -cm_dir top_cov -debug_access+all -l logs/elab.log -sim_res=1ps -kdb \
        -debug_pp \
        -LDFLAGS -rdynamic \
        -P ${VERDI_HOME}/share/PLI/VCS/${PLATFORM}/novas.tab ${VERDI_HOME}/share/PLI/VCS/${PLATFORM}/pli.a \
@@ -59,6 +59,7 @@ clean:
 	\rm -rf DVEfiles
 	\rm -rf csrc
 	\rm -rf *vpd
+	\rm -rf *vdb
 	\rm -rf ucli.key
 	\rm -f	*.fsdb
 	\rm -rf work.lib++
