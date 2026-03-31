@@ -1,6 +1,6 @@
 PLATFORM = linux64
 
-TOP = tb_top
+TOP = top
 
 export TOP_LEVEL = $(TOP)
 
@@ -22,7 +22,7 @@ ELAB = vcs -full64 -sverilog -cm tgl+branch+fsm+line+cond -cm_dir top_cov -debug
        -LDFLAGS -rdynamic \
        -P ${VERDI_HOME}/share/PLI/VCS/${PLATFORM}/novas.tab ${VERDI_HOME}/share/PLI/VCS/${PLATFORM}/pli.a \
        +vcs+lic+wait
-RUN = $(TOP).simv -cm tgl+branch+fsm+line+cond -cm_log logs/coverage_metrics.log -l logs/runsim.log +ntb_random_seed=$(SEED) \
+RUN = $(TOP).simv -cm tgl+branch+fsm+line+cond -cm_dir top_cov -cm_log logs/coverage_metrics.log -l logs/runsim.log +ntb_random_seed=$(SEED) \
       -ucli -i dump_fsdb_vcs.tcl \
       +fsdb+autoflush
 
@@ -52,6 +52,10 @@ rung:
 verdi:
 	verdi -dbdir $(TOP).simv.daidir -ssf $(TOP).fsdb &
 
+
+cover:
+	dve -full64 -cov -dir top_cov.vdb &
+
 clean:
 	\rm -rf logs
 	\rm -rf AN.DB
@@ -60,6 +64,7 @@ clean:
 	\rm -rf csrc
 	\rm -rf *vpd
 	\rm -rf *vdb
+	\rm -rf vdCovLog
 	\rm -rf ucli.key
 	\rm -f	*.fsdb
 	\rm -rf work.lib++
